@@ -1,0 +1,90 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://ui/template_key.gd" type="Script" id=1]
+[ext_resource path="res://images/remove-normal_16x16.png" type="Texture" id=2]
+[ext_resource path="res://styles/panel_container_empty.tres" type="StyleBox" id=3]
+[ext_resource path="res://ui/column_tag.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scripts/drop_value_type.gd" type="Script" id=5]
+[ext_resource path="res://images/remove-pressed_16x16.png" type="Texture" id=6]
+[ext_resource path="res://images/remove-hover_16x16.png" type="Texture" id=7]
+
+[node name="template_key" type="VBoxContainer"]
+anchor_right = 1.0
+margin_right = -768.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel" type="PanelContainer" parent="."]
+margin_right = 277.0
+margin_bottom = 26.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+custom_styles/panel = ExtResource( 3 )
+
+[node name="vbox" type="VBoxContainer" parent="panel"]
+margin_right = 277.0
+margin_bottom = 26.0
+
+[node name="hbox" type="HBoxContainer" parent="panel/vbox"]
+margin_right = 277.0
+margin_bottom = 26.0
+
+[node name="lbl_open" type="Label" parent="panel/vbox/hbox"]
+margin_top = 6.0
+margin_right = 6.0
+margin_bottom = 20.0
+text = "\""
+
+[node name="txt_key" type="LineEdit" parent="panel/vbox/hbox"]
+margin_left = 10.0
+margin_right = 36.0
+margin_bottom = 26.0
+custom_constants/minimum_spaces = 4
+expand_to_text_length = true
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="lbl_close" type="Label" parent="panel/vbox/hbox"]
+margin_left = 40.0
+margin_top = 6.0
+margin_right = 50.0
+margin_bottom = 20.0
+text = "\":"
+
+[node name="column_tag" parent="panel/vbox/hbox" instance=ExtResource( 4 )]
+margin_left = 54.0
+margin_right = 157.0
+margin_bottom = 26.0
+
+[node name="drop_vtype" type="OptionButton" parent="panel/vbox/hbox"]
+margin_left = 161.0
+margin_right = 257.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 96, 0 )
+script = ExtResource( 5 )
+
+[node name="bt_remove" type="TextureButton" parent="panel/vbox/hbox"]
+margin_left = 261.0
+margin_top = 5.0
+margin_right = 277.0
+margin_bottom = 21.0
+size_flags_vertical = 4
+texture_normal = ExtResource( 2 )
+texture_pressed = ExtResource( 6 )
+texture_hover = ExtResource( 7 )
+stretch_mode = 3
+
+[node name="scope_holder" type="HBoxContainer" parent="panel/vbox"]
+visible = false
+margin_top = 30.0
+margin_right = 277.0
+margin_bottom = 30.0
+[connection signal="text_changed" from="panel/vbox/hbox/txt_key" to="." method="_on_txt_key_text_changed"]
+[connection signal="item_selected" from="panel/vbox/hbox/drop_vtype" to="." method="_on_drop_vtype_item_selected"]
+[connection signal="pressed" from="panel/vbox/hbox/bt_remove" to="." method="_on_bt_remove_pressed"]

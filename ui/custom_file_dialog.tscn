@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ui/custom_file_dialog.gd" type="Script" id=1]
+
+[node name="CustomFileDialog" type="FileDialog"]
+margin_right = 512.0
+margin_bottom = 256.0
+popup_exclusive = true
+window_title = "Open a File"
+mode = 0
+access = 2
+filters = PoolStringArray( "*.csv ; Comma separated", "*.txt ; Text file" )
+current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
+current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

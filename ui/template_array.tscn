@@ -1,0 +1,115 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://ui/template_array.gd" type="Script" id=1]
+[ext_resource path="res://styles/panel_container_scope.tres" type="StyleBox" id=2]
+[ext_resource path="res://scripts/drop_value_type.gd" type="Script" id=3]
+[ext_resource path="res://images/remove-normal_16x16.png" type="Texture" id=4]
+[ext_resource path="res://images/add-pressed_16x16.png" type="Texture" id=5]
+[ext_resource path="res://images/add-hover_16x16.png" type="Texture" id=6]
+[ext_resource path="res://images/add-normal_16x16.png" type="Texture" id=7]
+[ext_resource path="res://images/remove-pressed_16x16.png" type="Texture" id=8]
+[ext_resource path="res://images/remove-hover_16x16.png" type="Texture" id=9]
+
+[node name="template_array" type="VBoxContainer"]
+margin_right = 320.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 8
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel" type="PanelContainer" parent="."]
+self_modulate = Color( 0.176471, 0.176471, 0.176471, 1 )
+margin_right = 320.0
+margin_bottom = 62.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+custom_styles/panel = ExtResource( 2 )
+
+[node name="vbox" type="VBoxContainer" parent="panel"]
+margin_right = 320.0
+margin_bottom = 62.0
+
+[node name="frow" type="HBoxContainer" parent="panel/vbox"]
+margin_right = 320.0
+margin_bottom = 20.0
+
+[node name="lb_open" type="Label" parent="panel/vbox/frow"]
+margin_top = 3.0
+margin_right = 4.0
+margin_bottom = 17.0
+text = "["
+
+[node name="chk_csvsource" type="CheckBox" parent="panel/vbox/frow"]
+visible = false
+margin_left = 8.0
+margin_right = 106.0
+margin_bottom = 24.0
+text = "CSV source"
+
+[node name="spacer" type="Control" parent="panel/vbox/frow"]
+margin_left = 8.0
+margin_right = 200.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="drop_arrtype" type="OptionButton" parent="panel/vbox/frow"]
+margin_left = 204.0
+margin_right = 300.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 96, 0 )
+script = ExtResource( 3 )
+
+[node name="bt_remarray" type="TextureButton" parent="panel/vbox/frow"]
+margin_left = 304.0
+margin_top = 2.0
+margin_right = 320.0
+margin_bottom = 18.0
+size_flags_vertical = 4
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 8 )
+texture_hover = ExtResource( 9 )
+
+[node name="srow" type="HBoxContainer" parent="panel/vbox"]
+margin_top = 24.0
+margin_right = 320.0
+margin_bottom = 24.0
+
+[node name="indenter" type="Control" parent="panel/vbox/srow"]
+margin_right = 16.0
+rect_min_size = Vector2( 16, 0 )
+
+[node name="element_holder" type="VBoxContainer" parent="panel/vbox/srow"]
+margin_left = 20.0
+margin_right = 320.0
+size_flags_horizontal = 3
+
+[node name="addrow" type="HBoxContainer" parent="panel/vbox"]
+margin_top = 28.0
+margin_right = 320.0
+margin_bottom = 44.0
+
+[node name="indenter" type="Control" parent="panel/vbox/addrow"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 0 )
+
+[node name="bt_addelement" type="TextureButton" parent="panel/vbox/addrow"]
+margin_left = 20.0
+margin_right = 36.0
+margin_bottom = 16.0
+size_flags_vertical = 4
+texture_normal = ExtResource( 7 )
+texture_pressed = ExtResource( 5 )
+texture_hover = ExtResource( 6 )
+
+[node name="lbl_close" type="Label" parent="panel/vbox"]
+margin_top = 48.0
+margin_right = 320.0
+margin_bottom = 62.0
+text = "]"
+[connection signal="item_selected" from="panel/vbox/frow/drop_arrtype" to="." method="_on_drop_arrtype_item_selected"]
+[connection signal="pressed" from="panel/vbox/frow/bt_remarray" to="." method="_on_bt_remarray_pressed"]
+[connection signal="pressed" from="panel/vbox/addrow/bt_addelement" to="." method="_on_bt_addelement_pressed"]

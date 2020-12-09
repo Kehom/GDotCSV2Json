@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://images/border.png" type="Texture" id=2]
+[ext_resource path="res://ui/column_tag.gd" type="Script" id=3]
+
+[sub_resource type="StyleBoxTexture" id=1]
+texture = ExtResource( 2 )
+region_rect = Rect2( 0, 0, 16, 16 )
+margin_left = 6.0
+margin_right = 6.0
+margin_top = 6.0
+margin_bottom = 6.0
+
+[node name="ColumnTag" type="VBoxContainer"]
+margin_right = 384.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 0, 24 )
+mouse_filter = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel" type="PanelContainer" parent="."]
+margin_right = 103.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 24 )
+mouse_filter = 2
+size_flags_horizontal = 0
+custom_styles/panel = SubResource( 1 )
+
+[node name="hbox" type="HBoxContainer" parent="panel"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 97.0
+margin_bottom = 20.0
+
+[node name="lbl_alias" type="Label" parent="panel/hbox"]
+margin_right = 91.0
+margin_bottom = 14.0
+text = "[column_alias]"

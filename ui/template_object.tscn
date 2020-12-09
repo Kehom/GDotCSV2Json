@@ -1,0 +1,100 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://ui/template_object.gd" type="Script" id=1]
+[ext_resource path="res://styles/panel_container_scope.tres" type="StyleBox" id=2]
+[ext_resource path="res://images/add-pressed_16x16.png" type="Texture" id=3]
+[ext_resource path="res://images/remove-normal_16x16.png" type="Texture" id=4]
+[ext_resource path="res://images/add-hover_16x16.png" type="Texture" id=5]
+[ext_resource path="res://images/add-normal_16x16.png" type="Texture" id=6]
+[ext_resource path="res://images/remove-pressed_16x16.png" type="Texture" id=7]
+[ext_resource path="res://images/remove-hover_16x16.png" type="Texture" id=8]
+
+[node name="template_object" type="VBoxContainer"]
+margin_right = 192.0
+margin_bottom = 36.0
+size_flags_horizontal = 3
+size_flags_vertical = 8
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="panel" type="PanelContainer" parent="."]
+self_modulate = Color( 0.176471, 0.176471, 0.176471, 1 )
+margin_right = 192.0
+margin_bottom = 58.0
+size_flags_horizontal = 3
+size_flags_vertical = 8
+custom_styles/panel = ExtResource( 2 )
+
+[node name="vbox" type="VBoxContainer" parent="panel"]
+margin_right = 192.0
+margin_bottom = 58.0
+
+[node name="frow" type="HBoxContainer" parent="panel/vbox"]
+margin_right = 192.0
+margin_bottom = 16.0
+
+[node name="lbl_open" type="Label" parent="panel/vbox/frow"]
+margin_top = 1.0
+margin_right = 5.0
+margin_bottom = 15.0
+text = "{"
+
+[node name="spacer" type="Control" parent="panel/vbox/frow"]
+margin_left = 9.0
+margin_right = 172.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+
+[node name="bt_remove" type="TextureButton" parent="panel/vbox/frow"]
+margin_left = 176.0
+margin_right = 192.0
+margin_bottom = 16.0
+size_flags_vertical = 4
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 7 )
+texture_hover = ExtResource( 8 )
+
+[node name="srow" type="HBoxContainer" parent="panel/vbox"]
+margin_top = 20.0
+margin_right = 192.0
+margin_bottom = 20.0
+
+[node name="indenter" type="Control" parent="panel/vbox/srow"]
+margin_right = 16.0
+rect_min_size = Vector2( 16, 0 )
+
+[node name="key_holder" type="VBoxContainer" parent="panel/vbox/srow"]
+margin_left = 20.0
+margin_right = 20.0
+
+[node name="arow" type="HBoxContainer" parent="panel/vbox"]
+margin_top = 24.0
+margin_right = 192.0
+margin_bottom = 40.0
+
+[node name="indenter" type="Control" parent="panel/vbox/arow"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 0 )
+
+[node name="bt_addkey" type="TextureButton" parent="panel/vbox/arow"]
+margin_left = 20.0
+margin_right = 36.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 3 )
+texture_hover = ExtResource( 5 )
+
+[node name="lrow" type="HBoxContainer" parent="panel/vbox"]
+margin_top = 44.0
+margin_right = 192.0
+margin_bottom = 58.0
+
+[node name="lbl_close" type="Label" parent="panel/vbox/lrow"]
+margin_right = 5.0
+margin_bottom = 14.0
+text = "}"
+[connection signal="pressed" from="panel/vbox/frow/bt_remove" to="." method="_on_bt_remove_pressed"]
+[connection signal="pressed" from="panel/vbox/arow/bt_addkey" to="." method="_on_bt_addkey_pressed"]

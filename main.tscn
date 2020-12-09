@@ -1,0 +1,268 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://main.gd" type="Script" id=2]
+[ext_resource path="res://ui/custom_file_dialog.gd" type="Script" id=3]
+[ext_resource path="res://ui/template_array.tscn" type="PackedScene" id=4]
+[ext_resource path="res://fonts/font_hack_regular.tres" type="DynamicFont" id=5]
+
+[node name="main" type="CanvasLayer"]
+script = ExtResource( 2 )
+
+[node name="splitter" type="HSplitContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+split_offset = 392
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="left" type="Panel" parent="splitter"]
+margin_right = 392.0
+margin_bottom = 600.0
+
+[node name="vbox" type="VBoxContainer" parent="splitter/left"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -8.0
+custom_constants/separation = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="buttons" type="HBoxContainer" parent="splitter/left/vbox"]
+margin_right = 376.0
+margin_bottom = 20.0
+
+[node name="bt_loadcsv" type="Button" parent="splitter/left/vbox/buttons"]
+margin_right = 80.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 80, 0 )
+text = "Load CSV"
+
+[node name="frowsetting" type="HBoxContainer" parent="splitter/left/vbox"]
+margin_top = 28.0
+margin_right = 376.0
+margin_bottom = 48.0
+
+[node name="lbl_frow" type="Label" parent="splitter/left/vbox/frowsetting"]
+margin_top = 3.0
+margin_right = 59.0
+margin_bottom = 17.0
+text = "First row:"
+
+[node name="spacer" type="Control" parent="splitter/left/vbox/frowsetting"]
+margin_left = 63.0
+margin_right = 236.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="drop_frow" type="OptionButton" parent="splitter/left/vbox/frowsetting"]
+margin_left = 240.0
+margin_right = 376.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 136, 0 )
+
+[node name="hbox_vars" type="HBoxContainer" parent="splitter/left/vbox"]
+margin_top = 56.0
+margin_right = 376.0
+margin_bottom = 210.0
+custom_constants/separation = 8
+
+[node name="vbox_vlist" type="VBoxContainer" parent="splitter/left/vbox/hbox_vars"]
+visible = false
+margin_right = 184.0
+margin_bottom = 154.0
+size_flags_horizontal = 3
+
+[node name="lbl_vars" type="Label" parent="splitter/left/vbox/hbox_vars/vbox_vlist"]
+margin_right = 184.0
+margin_bottom = 14.0
+text = "Variables:"
+
+[node name="vbox_clist" type="VBoxContainer" parent="splitter/left/vbox/hbox_vars"]
+margin_right = 376.0
+margin_bottom = 154.0
+size_flags_horizontal = 3
+
+[node name="lbl_columns" type="Label" parent="splitter/left/vbox/hbox_vars/vbox_clist"]
+margin_right = 376.0
+margin_bottom = 14.0
+text = "Column list:"
+
+[node name="scrl_columns" type="ScrollContainer" parent="splitter/left/vbox/hbox_vars/vbox_clist"]
+margin_top = 18.0
+margin_right = 376.0
+margin_bottom = 154.0
+rect_min_size = Vector2( 0, 136 )
+
+[node name="vbox" type="VBoxContainer" parent="splitter/left/vbox/hbox_vars/vbox_clist/scrl_columns"]
+margin_right = 376.0
+margin_bottom = 136.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="hbox_out" type="HBoxContainer" parent="splitter/left/vbox"]
+margin_top = 218.0
+margin_right = 376.0
+margin_bottom = 238.0
+
+[node name="lbl_outtemplate" type="Label" parent="splitter/left/vbox/hbox_out"]
+margin_top = 3.0
+margin_right = 111.0
+margin_bottom = 17.0
+text = "Output template:"
+
+[node name="spacer" type="Control" parent="splitter/left/vbox/hbox_out"]
+margin_left = 115.0
+margin_right = 208.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="bt_loadtemplate" type="Button" parent="splitter/left/vbox/hbox_out"]
+margin_left = 212.0
+margin_right = 292.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 80, 0 )
+text = "Load"
+
+[node name="bt_savetemplate" type="Button" parent="splitter/left/vbox/hbox_out"]
+margin_left = 296.0
+margin_right = 376.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 80, 0 )
+text = "Save"
+
+[node name="scrl_template" type="ScrollContainer" parent="splitter/left/vbox"]
+margin_top = 246.0
+margin_right = 376.0
+margin_bottom = 584.0
+size_flags_vertical = 3
+
+[node name="vbox" type="VBoxContainer" parent="splitter/left/vbox/scrl_template"]
+margin_right = 376.0
+margin_bottom = 338.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="root_scope" parent="splitter/left/vbox/scrl_template/vbox" instance=ExtResource( 4 )]
+margin_right = 376.0
+margin_bottom = 62.0
+show_self_remove = false
+
+[node name="right" type="Panel" parent="splitter"]
+margin_left = 404.0
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="bt_save" type="Button" parent="splitter/right"]
+margin_left = 12.0
+margin_top = 8.0
+margin_right = 92.0
+margin_bottom = 28.0
+text = "Save"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="rich_preview" type="RichTextLabel" parent="splitter/right"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 40.0
+margin_right = -8.0
+margin_bottom = -8.0
+custom_fonts/mono_font = ExtResource( 5 )
+bbcode_enabled = true
+tab_size = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="indentsetting" type="HBoxContainer" parent="splitter/right"]
+margin_left = 172.0
+margin_top = 8.0
+margin_right = 548.0
+margin_bottom = 32.0
+__meta__ = {
+"_edit_group_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="lbl_indent" type="Label" parent="splitter/right/indentsetting"]
+margin_top = 5.0
+margin_right = 46.0
+margin_bottom = 19.0
+text = "Indent:"
+
+[node name="drop_indent" type="OptionButton" parent="splitter/right/indentsetting"]
+margin_left = 50.0
+margin_right = 186.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 136, 0 )
+
+[node name="txt_indentsize" type="SpinBox" parent="splitter/right/indentsetting"]
+margin_left = 190.0
+margin_right = 264.0
+margin_bottom = 24.0
+min_value = 1.0
+max_value = 9.0
+value = 3.0
+
+[node name="dlg_loadcsv" type="FileDialog" parent="."]
+margin_right = 512.0
+margin_bottom = 320.0
+popup_exclusive = true
+window_title = "Open a File"
+resizable = true
+mode = 0
+access = 2
+filters = PoolStringArray( "*.csv ; Comma separated", "*.txt ; Text file" )
+current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
+current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
+script = ExtResource( 3 )
+
+[node name="dlg_saveoutput" type="FileDialog" parent="."]
+margin_right = 512.0
+margin_bottom = 320.0
+popup_exclusive = true
+resizable = true
+access = 2
+filters = PoolStringArray( "*.json ; JSON", "*.txt ; Text file" )
+current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
+current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
+
+[node name="dlg_loadtemplate" type="FileDialog" parent="."]
+margin_right = 512.0
+margin_bottom = 320.0
+popup_exclusive = true
+window_title = "Open a File"
+resizable = true
+mode = 0
+access = 2
+filters = PoolStringArray( "*.json ; json" )
+current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
+current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
+
+[node name="dlg_savetemplate" type="FileDialog" parent="."]
+margin_right = 512.0
+margin_bottom = 320.0
+popup_exclusive = true
+resizable = true
+access = 2
+filters = PoolStringArray( "*.json ; json" )
+current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
+current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
+[connection signal="pressed" from="splitter/left/vbox/buttons/bt_loadcsv" to="." method="_on_bt_loadcsv_pressed"]
+[connection signal="item_selected" from="splitter/left/vbox/frowsetting/drop_frow" to="." method="_on_drop_frow_item_selected"]
+[connection signal="pressed" from="splitter/left/vbox/hbox_out/bt_loadtemplate" to="." method="_on_bt_loadtemplate_pressed"]
+[connection signal="pressed" from="splitter/left/vbox/hbox_out/bt_savetemplate" to="." method="_on_bt_savetemplate_pressed"]
+[connection signal="pressed" from="splitter/right/bt_save" to="." method="_on_bt_save_pressed"]
+[connection signal="item_selected" from="splitter/right/indentsetting/drop_indent" to="." method="_on_drop_indent_item_selected"]
+[connection signal="value_changed" from="splitter/right/indentsetting/txt_indentsize" to="." method="_on_txt_indentsize_value_changed"]
+[connection signal="file_selected" from="dlg_loadcsv" to="." method="_on_dlg_loadcsv_file_selected"]
+[connection signal="file_selected" from="dlg_saveoutput" to="." method="_on_dlg_saveoutput_file_selected"]
+[connection signal="file_selected" from="dlg_loadtemplate" to="." method="_on_dlg_loadtemplate_file_selected"]
+[connection signal="file_selected" from="dlg_savetemplate" to="." method="_on_dlg_savetemplate_file_selected"]

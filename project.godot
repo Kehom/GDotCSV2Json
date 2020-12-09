@@ -1,0 +1,75 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "VBoxContainer",
+"class": "ColumnTag",
+"language": "GDScript",
+"path": "res://ui/column_tag.gd"
+}, {
+"base": "FileDialog",
+"class": "CustomFileDialog",
+"language": "GDScript",
+"path": "res://ui/custom_file_dialog.gd"
+}, {
+"base": "OptionButton",
+"class": "DropValueType",
+"language": "GDScript",
+"path": "res://scripts/drop_value_type.gd"
+}, {
+"base": "TemplateBase",
+"class": "TemplateArray",
+"language": "GDScript",
+"path": "res://ui/template_array.gd"
+}, {
+"base": "VBoxContainer",
+"class": "TemplateBase",
+"language": "GDScript",
+"path": "res://scripts/template_base.gd"
+}, {
+"base": "TemplateBase",
+"class": "TemplateElement",
+"language": "GDScript",
+"path": "res://ui/array_element.gd"
+}, {
+"base": "TemplateBase",
+"class": "TemplateKey",
+"language": "GDScript",
+"path": "res://ui/template_key.gd"
+}, {
+"base": "TemplateBase",
+"class": "TemplateObject",
+"language": "GDScript",
+"path": "res://ui/template_object.gd"
+} ]
+_global_script_class_icons={
+"ColumnTag": "",
+"CustomFileDialog": "",
+"DropValueType": "",
+"TemplateArray": "",
+"TemplateBase": "",
+"TemplateElement": "",
+"TemplateKey": "",
+"TemplateObject": ""
+}
+
+[application]
+
+config/name="App - CSV2JSON"
+run/main_scene="res://main.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+appstate="*res://scripts/appstate.gd"
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
