@@ -19,6 +19,7 @@ __meta__ = {
 [node name="left" type="Panel" parent="splitter"]
 margin_right = 392.0
 margin_bottom = 600.0
+rect_clip_content = true
 
 [node name="vbox" type="VBoxContainer" parent="splitter/left"]
 anchor_right = 1.0
@@ -255,6 +256,8 @@ access = 2
 filters = PoolStringArray( "*.json ; json" )
 current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
 current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
+
+[connection signal="dragged" from="splitter" to="." method="_on_splitter_dragged"]
 [connection signal="pressed" from="splitter/left/vbox/buttons/bt_loadcsv" to="." method="_on_bt_loadcsv_pressed"]
 [connection signal="item_selected" from="splitter/left/vbox/frowsetting/drop_frow" to="." method="_on_drop_frow_item_selected"]
 [connection signal="pressed" from="splitter/left/vbox/hbox_out/bt_loadtemplate" to="." method="_on_bt_loadtemplate_pressed"]

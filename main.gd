@@ -41,6 +41,14 @@ onready var rtext_preview: RichTextLabel = $splitter/right/rich_preview
 var _col_count: int = 0
 
 
+func _unhandled_key_input(evt: InputEventKey) -> void:
+	if (evt.is_pressed() && evt.scancode == KEY_F1):
+		var l: Panel = $splitter/left
+		print(l.rect_size)
+		pass
+
+
+
 func _ready() -> void:
 	# Fill the drop down menus
 	for i in appstate.first_row_map:
@@ -128,8 +136,6 @@ func _get_base_indent() -> String:
 			ret = "	"
 	
 	return ret
-
-
 
 
 
@@ -286,4 +292,8 @@ func _on_txt_indentsize_value_changed(_value: float) -> void:
 	_calculate_output()
 
 
+func _on_splitter_dragged(offset: int) -> void:
+	if (offset < 300):
+		var splitter: SplitContainer = $splitter
+		splitter.split_offset = 300
 
