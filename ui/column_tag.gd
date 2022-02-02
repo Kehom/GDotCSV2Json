@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Yuri Sarudiansky
+# Copyright (c) 2020-2022 Yuri Sarudiansky
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,18 +24,17 @@
 extends VBoxContainer
 class_name ColumnTag
 
-# Name of the column that will be displayed in the UI.
-var _alias: String
-# Column index within the input CSV
-var _index: int
+
+#######################################################################################################################
+### Signals and definitions
 
 
-var _list_only: bool = false
+#######################################################################################################################
+### "Public" properties
 
 
-# If this is true then this is being used as a drag preview so don't return anything within the get_drag_data()
-#var _is_preview: bool = false
-
+#######################################################################################################################
+### "Public" functions
 func set_data(alias: String, index: int, list_only: bool) -> void:
 	_alias = alias
 	_index = index
@@ -55,6 +54,36 @@ func get_column_index() -> int:
 	return _index
 
 
+
+
+#######################################################################################################################
+### "Private" definitions
+
+
+#######################################################################################################################
+### "Private" properties
+# Name of the column that will be displayed in the UI.
+var _alias: String
+# Column index within the input CSV
+var _index: int
+
+
+var _list_only: bool = false
+
+
+# If this is true then this is being used as a drag preview so don't return anything within the get_drag_data()
+#var _is_preview: bool = false
+
+#######################################################################################################################
+### "Private" functions
+
+
+#######################################################################################################################
+### Event handlers
+
+
+#######################################################################################################################
+### Overrides
 func get_drag_data(_pos: Vector2):
 	if (_index < 0):
 		return null
@@ -66,7 +95,6 @@ func get_drag_data(_pos: Vector2):
 		"index": _index,
 		"columntag": true
 	}
-
 
 func can_drop_data(_pos: Vector2, data) -> bool:
 	if (data is Dictionary && data.has("columntag")):

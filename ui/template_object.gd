@@ -22,10 +22,16 @@ extends TemplateBase
 class_name TemplateObject
 
 
+#######################################################################################################################
+### Signals and definitions
+
+
+#######################################################################################################################
+### "Public" properties
 onready var key_holder: VBoxContainer = $panel/vbox/srow/key_holder
 
-
-
+#######################################################################################################################
+### "Public" functions
 func add_key(kname: String, col_alias: String, column: int, type: int) -> void:
 	var nkey: TemplateBase = appstate.template_key_t.instance()
 	
@@ -35,6 +41,33 @@ func add_key(kname: String, col_alias: String, column: int, type: int) -> void:
 	nkey.value_type = type
 
 
+func set_show_self_remove(e: bool) -> void:
+	$panel/vbox/frow/bt_remove.visible = e
+
+#######################################################################################################################
+### "Private" definitions
+
+
+#######################################################################################################################
+### "Private" properties
+
+
+#######################################################################################################################
+### "Private" functions
+
+
+#######################################################################################################################
+### Event handlers
+func _on_bt_addkey_pressed() -> void:
+	add_key("NewKey", "Drop column here", -1, appstate.ColumnValueType.VT_String)
+	
+
+
+func _on_bt_remove_pressed() -> void:
+	remove_itself()
+
+#######################################################################################################################
+### Overrides
 func calculate_output(columns: PoolStringArray, bindent: String, ilevel: int) -> String:
 	var indent: String = build_indent(bindent, ilevel)
 	
@@ -67,16 +100,3 @@ func get_template_children() -> Array:
 func add_restored_child(c: TemplateBase) -> void:
 	key_holder.add_child(c)
 
-
-
-func set_show_self_remove(e: bool) -> void:
-	$panel/vbox/frow/bt_remove.visible = e
-
-
-func _on_bt_addkey_pressed() -> void:
-	add_key("NewKey", "Drop column here", -1, appstate.ColumnValueType.VT_String)
-	
-
-
-func _on_bt_remove_pressed() -> void:
-	remove_itself()

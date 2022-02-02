@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Yuri Sarudiansky
+# Copyright (c) 2020-2022 Yuri Sarudiansky
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,12 @@ extends TemplateBase
 class_name TemplateKey
 
 
+#######################################################################################################################
+### Signals and definitions
+
+
+#######################################################################################################################
+### "Public" properties
 # The name of the key. This will be directly used within the output as long as it's not empty
 var key_name: String = "" setget set_key_name
 
@@ -42,13 +48,10 @@ onready var txt_key: LineEdit = $panel/vbox/hbox/txt_key
 onready var drop_vtype: DropValueType = $panel/vbox/hbox/drop_vtype
 onready var scope_holder: HBoxContainer = $panel/vbox/scope_holder
 
-
-
-
-
+#######################################################################################################################
+### "Public" functions
 func set_column(alias: String, index: int) -> void:
 	column_tag.set_data(alias, index, false)
-
 
 
 func set_key_name(n: String) -> void:
@@ -62,7 +65,68 @@ func set_value_type(vt: int) -> void:
 	if (drop_vtype):
 		drop_vtype.selected = vt
 
+#######################################################################################################################
+### "Private" definitions
 
+
+#######################################################################################################################
+### "Private" properties
+
+
+#######################################################################################################################
+### "Private" functions
+func _check_ui_visibility() -> void:
+	if (scope_node):
+		scope_node.set_show_self_remove(false)
+	
+	scope_holder.visible = (scope_node != null)
+	column_tag.visible = (scope_node == null)
+
+
+func _clear_scope_node() -> void:
+	if (scope_node):
+		scope_holder.remove_child(scope_node)
+		scope_node.queue_free()
+		scope_node = null
+
+
+func _on_bt_remove_pressed() -> void:
+	remove_itself()
+
+#######################################################################################################################
+### Event handlers
+func _on_txt_key_text_changed(new_text: String) -> void:
+	key_name = new_text
+	appstate.notify_changes()
+
+
+
+func _on_drop_vtype_item_selected(index: int) -> void:
+	value_type = index
+	
+	# If a change occurs, the scope holder has to be cleared, no matter what change is done
+	_clear_scope_node()
+	
+	
+	match value_type:
+		appstate.ColumnValueType.VT_Int, appstate.ColumnValueType.VT_Float, appstate.ColumnValueType.VT_String:
+			# Maybe there is nothing to do here....
+			pass
+		
+		appstate.ColumnValueType.VT_Array:
+			scope_node = appstate.template_array_t.instance()
+			scope_holder.add_child(scope_node)
+		
+		appstate.ColumnValueType.VT_Map:
+			scope_node = appstate.template_object_t.instance()
+			scope_holder.add_child(scope_node)
+	
+	_check_ui_visibility()
+	
+	appstate.notify_changes()
+
+#######################################################################################################################
+### Overrides
 func calculate_output(columns: PoolStringArray, bindent: String, ilevel: int) -> String:
 	if (key_name.empty()):
 		return ""
@@ -117,55 +181,3 @@ func add_restored_child(c: TemplateBase) -> void:
 	scope_node = c
 	_check_ui_visibility()
 
-
-
-func _on_txt_key_text_changed(new_text: String) -> void:
-	key_name = new_text
-	appstate.notify_changes()
-
-
-
-func _on_drop_vtype_item_selected(index: int) -> void:
-	value_type = index
-	
-	# If a change occurs, the scope holder has to be cleared, no matter what change is done
-	_clear_scope_node()
-	
-	
-	match value_type:
-		appstate.ColumnValueType.VT_Int, appstate.ColumnValueType.VT_Float, appstate.ColumnValueType.VT_String:
-			# Maybe there is nothing to do here....
-			pass
-		
-		appstate.ColumnValueType.VT_Array:
-			scope_node = appstate.template_array_t.instance()
-			scope_holder.add_child(scope_node)
-		
-		appstate.ColumnValueType.VT_Map:
-			scope_node = appstate.template_object_t.instance()
-			scope_holder.add_child(scope_node)
-	
-	_check_ui_visibility()
-	
-	appstate.notify_changes()
-
-
-func _check_ui_visibility() -> void:
-	if (scope_node):
-		scope_node.set_show_self_remove(false)
-	
-	scope_holder.visible = (scope_node != null)
-	column_tag.visible = (scope_node == null)
-
-
-func _clear_scope_node() -> void:
-	if (scope_node):
-		scope_holder.remove_child(scope_node)
-		scope_node.queue_free()
-		scope_node = null
-
-
-
-
-func _on_bt_remove_pressed() -> void:
-	remove_itself()

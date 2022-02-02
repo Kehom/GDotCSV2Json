@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Yuri Sarudiansky
+# Copyright (c) 2020-2022 Yuri Sarudiansky
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,56 @@
 extends VBoxContainer
 class_name TemplateBase
 
+#######################################################################################################################
+### Signals and definitions
 
 
+#######################################################################################################################
+### "Public" properties
+
+
+#######################################################################################################################
+### "Public" functions
+# Derived classes must override these in order to properly generate the template files
 func calculate_output(_columns: PoolStringArray, _bindent: String, _ilevel: int) -> String:
 	return ""
 
 func clear_template() -> void:
 	pass
 
+func get_template_type() -> String:
+	return ""
+
+func generate_extra_data(_out: Dictionary) -> void:
+	pass
+
+func get_template_children() -> Array:
+	return []
+
+
+func restore_extra_data(_d: Dictionary) -> void:
+	pass
+
+# NOTE: The idea here was to static type the argument to TemplateBase. However it resulted in resource leak error
+# messages upon exiting the app. So, leaving this as variant
+func add_restored_child(_c) -> void:
+	pass
+
+
+
+func restore_from_template(data: Dictionary, version: int) -> void:
+	restore_extra_data(data)
+	
+	clear_template()
+	
+	if (data.has("children")):
+		for child in data.children:
+			var ps: PackedScene = appstate.get_scene_by_serialized_type(child.type)
+			if (ps):
+				var cnode: VBoxContainer = ps.instance()
+				add_restored_child(cnode)
+				if (cnode.is_inside_tree()):
+					cnode.restore_from_template(child, version)
 
 func format_str_str(val: String, indent: String) -> String:
 	return (indent + "[color=#C49166]\"%s\"[/color]") % val
@@ -100,41 +142,22 @@ func generate_save_template(out: Dictionary) -> void:
 			child.generate_save_template(cout)
 			out.children.append(cout)
 
+#######################################################################################################################
+### "Private" definitions
 
 
-# Derived classes must override these in order to properly generate the template files
-func get_template_type() -> String:
-	return ""
-
-func generate_extra_data(_out: Dictionary) -> void:
-	pass
-
-func get_template_children() -> Array:
-	return []
+#######################################################################################################################
+### "Private" properties
 
 
-func restore_from_template(data: Dictionary, version: int) -> void:
-	restore_extra_data(data)
-	
-	clear_template()
-	
-	if (data.has("children")):
-		for child in data.children:
-			var ps: PackedScene = appstate.get_scene_by_serialized_type(child.type)
-			if (ps):
-				var cnode: VBoxContainer = ps.instance()
-				add_restored_child(cnode)
-				if (cnode.is_inside_tree()):
-					cnode.restore_from_template(child, version)
+#######################################################################################################################
+### "Private" functions
 
 
+#######################################################################################################################
+### Event handlers
 
 
-func restore_extra_data(_d: Dictionary) -> void:
-	pass
-
-# NOTE: The idea here was to static type the argument to TemplateBase. However it resulted in resource leak error
-# messages upon exiting the app. So, leaving this as variant
-func add_restored_child(_c) -> void:
-	pass
+#######################################################################################################################
+### Overrides
 

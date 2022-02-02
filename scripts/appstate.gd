@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Yuri Sarudiansky
+# Copyright (c) 2020-2022 Yuri Sarudiansky
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,9 @@
 
 extends Node
 
+
+#######################################################################################################################
+### Signals and definitions
 signal settings_changed
 
 const template_array_t: PackedScene = preload("res://ui/template_array.tscn")
@@ -31,8 +34,6 @@ const template_key_t: PackedScene = preload("res://ui/template_key.tscn")
 const template_element_t: PackedScene = preload("res://ui/array_element.tscn")
 
 const column_tag_t: PackedScene = preload("res://ui/column_tag.tscn")
-
-
 
 ### Some options that will be identified by "constant integers"
 enum ColumnValueType {
@@ -54,8 +55,8 @@ enum IndentType {
 	IT_Tab,
 }
 
-
-
+#######################################################################################################################
+### "Public" properties
 var file_data: Array = []
 var first_valid: int = 0
 
@@ -81,7 +82,8 @@ onready var indent_type: Dictionary = {
 	IndentType.IT_Tab: "Tab"
 }
 
-
+#######################################################################################################################
+### "Public" functions
 # Clear all children from the specified node.
 static func clear_node_children(node: Node) -> void:
 	for child in node.get_children():
@@ -117,3 +119,23 @@ func get_scene_by_serialized_type(tp: String) -> PackedScene:
 			ret = template_element_t
 	
 	return ret
+
+#######################################################################################################################
+### "Private" definitions
+
+
+#######################################################################################################################
+### "Private" properties
+
+
+#######################################################################################################################
+### "Private" functions
+
+
+#######################################################################################################################
+### Event handlers
+
+
+#######################################################################################################################
+### Overrides
+

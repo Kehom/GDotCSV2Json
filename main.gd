@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Yuri Sarudiansky
+# Copyright (c) 2020-2022 Yuri Sarudiansky
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,12 @@
 
 extends CanvasLayer
 
-
+#######################################################################################################################
+### Signals and definitions
 const column_tag_t: PackedScene = preload("res://ui/column_tag.tscn")
 
-
+#######################################################################################################################
+### "Public" properties
 # Some "shortcuts" to some nodes, which will make access a little easier.
 onready var drop_frow: OptionButton = $splitter/left/vbox/frowsetting/drop_frow
 onready var drop_indent: OptionButton = $splitter/right/indentsetting/drop_indent
@@ -36,43 +38,21 @@ onready var root_scope: TemplateBase = $splitter/left/vbox/scrl_template/vbox/ro
 
 onready var rtext_preview: RichTextLabel = $splitter/right/rich_preview
 
+#######################################################################################################################
+### "Public" functions
 
+
+#######################################################################################################################
+### "Private" definitions
+
+
+#######################################################################################################################
+### "Private" properties
 # Cache number of columns within the CSV file. Not entirely necessary but make coding slightly easier
 var _col_count: int = 0
 
-
-func _unhandled_key_input(evt: InputEventKey) -> void:
-	if (evt.is_pressed() && evt.scancode == KEY_F1):
-		var l: Panel = $splitter/left
-		print(l.rect_size)
-		pass
-
-
-
-func _ready() -> void:
-	# Fill the drop down menus
-	for i in appstate.first_row_map:
-		drop_frow.add_item(appstate.first_row_map[i], i)
-	
-	for i in appstate.indent_type:
-		drop_indent.add_item(appstate.indent_type[i], i)
-	
-	# Autoselect space as ident type.
-	# TODO: take this from a setting file
-	drop_indent.selected = appstate.IndentType.IT_Space
-	
-	# Connect into the signal that will notfiy that something has changed and output must be recalculated
-	# warning-ignore:return_value_discarded
-	appstate.connect("settings_changed", self, "_calculate_output")
-	
-	# FIXME: This is only valid if the root_scope is indeed a TemplateArray
-	root_scope.set_array_type(appstate.ColumnValueType.VT_Map)
-	root_scope.set_csv_source(true)
-	
-	_calculate_output()
-
-
-
+#######################################################################################################################
+### "Private" functions
 func _build_column_list() -> void:
 	# Ensure the column container is empty
 	appstate.clear_node_children(vbox_columns)
@@ -137,8 +117,8 @@ func _get_base_indent() -> String:
 	
 	return ret
 
-
-
+#######################################################################################################################
+### Event handlers
 
 func _on_bt_loadcsv_pressed() -> void:
 	$dlg_loadcsv.popup_centered()
@@ -296,4 +276,36 @@ func _on_splitter_dragged(offset: int) -> void:
 	if (offset < 300):
 		var splitter: SplitContainer = $splitter
 		splitter.split_offset = 300
+
+#######################################################################################################################
+### Overrides
+func _unhandled_key_input(evt: InputEventKey) -> void:
+	if (evt.is_pressed() && evt.scancode == KEY_F1):
+		var l: Panel = $splitter/left
+		print(l.rect_size)
+		pass
+
+
+
+func _ready() -> void:
+	# Fill the drop down menus
+	for i in appstate.first_row_map:
+		drop_frow.add_item(appstate.first_row_map[i], i)
+	
+	for i in appstate.indent_type:
+		drop_indent.add_item(appstate.indent_type[i], i)
+	
+	# Autoselect space as ident type.
+	# TODO: take this from a setting file
+	drop_indent.selected = appstate.IndentType.IT_Space
+	
+	# Connect into the signal that will notfiy that something has changed and output must be recalculated
+	# warning-ignore:return_value_discarded
+	appstate.connect("settings_changed", self, "_calculate_output")
+	
+	# FIXME: This is only valid if the root_scope is indeed a TemplateArray
+	root_scope.set_array_type(appstate.ColumnValueType.VT_Map)
+	root_scope.set_csv_source(true)
+	
+	_calculate_output()
 

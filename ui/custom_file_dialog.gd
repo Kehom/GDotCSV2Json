@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Yuri Sarudiansky
+# Copyright (c) 2020-2022 Yuri Sarudiansky
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,51 @@ tool        # Just so additional controls appear in the editor preview
 extends FileDialog
 class_name CustomFileDialog
 
+
+#######################################################################################################################
+### Signals and definitions
 const csv_separator_t: PackedScene = preload("res://ui/cdialog_separator.tscn")
 
+#######################################################################################################################
+### "Public" properties
+
+
+#######################################################################################################################
+### "Public" functions
+func get_separator() -> String:
+	var ret: String = _txt_separator.text
+	
+	if (ret.empty()):
+		ret = ","
+	
+	return ret
+
+
+func rebuild_column_map() -> bool:
+	return _chk_rebuild.pressed
+
+#######################################################################################################################
+### "Private" definitions
+
+
+#######################################################################################################################
+### "Private" properties
 var _txt_separator: LineEdit = null
 var _chk_rebuild: CheckBox = null
 
+#######################################################################################################################
+### "Private" functions
+
+
+#######################################################################################################################
+### Event handlers
+func _on_separator_focus_entered() -> void:
+	# For some reason, at this point control is still without focus meaning that directly calling "select_all()" will fail.
+	# Postponing the call works.
+	_txt_separator.call_deferred("select_all")
+
+#######################################################################################################################
+### Overrides
 func _ready() -> void:
 	# Create the custom controls
 	var sepnode: Node = csv_separator_t.instance()
@@ -53,23 +93,3 @@ func _ready() -> void:
 	_txt_separator.connect("focus_entered", self, "_on_separator_focus_entered")
 
 
-
-
-func _on_separator_focus_entered() -> void:
-	# For some reason, at this point control is still without focus meaning that directly calling "select_all()" will fail.
-	# Postponing the call works.
-	_txt_separator.call_deferred("select_all")
-
-
-
-func get_separator() -> String:
-	var ret: String = _txt_separator.text
-	
-	if (ret.empty()):
-		ret = ","
-	
-	return ret
-
-
-func rebuild_column_map() -> bool:
-	return _chk_rebuild.pressed

@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Yuri Sarudiansky
+# Copyright (c) 2020-2022 Yuri Sarudiansky
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,19 @@
 extends TemplateBase
 class_name TemplateElement
 
+
+#######################################################################################################################
+### Signals and definitions
+
+
+#######################################################################################################################
+### "Public" properties
 onready var tag_value: ColumnTag = $panel/hbox/tagval
 
 var value_type: int = appstate.ColumnValueType.VT_String
 
-func _ready() -> void:
-	tag_value.set_data("Drop column here", -1, false)
-
-
+#######################################################################################################################
+### "Public" functions
 func get_column_index() -> int:
 	return tag_value.get_column_index()
 
@@ -59,6 +64,25 @@ func restore_extra_data(d: Dictionary) -> void:
 	set_value_type(d.value_type)
 	tag_value.set_data(d.calias, d.column, false)
 
+#######################################################################################################################
+### "Private" definitions
 
+
+#######################################################################################################################
+### "Private" properties
+
+
+#######################################################################################################################
+### "Private" functions
+
+
+#######################################################################################################################
+### Event handlers
 func _on_bt_remove_pressed() -> void:
 	remove_itself()
+
+#######################################################################################################################
+### Overrides
+func _ready() -> void:
+	tag_value.set_data("Drop column here", -1, false)
+
