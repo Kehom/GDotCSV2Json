@@ -57,7 +57,9 @@ enum IndentType {
 
 #######################################################################################################################
 ### "Public" properties
+# warning-ignore:unused_class_variable
 var file_data: Array = []
+# warning-ignore:unused_class_variable
 var first_valid: int = 0
 
 
@@ -71,11 +73,13 @@ onready var column_type_map: Dictionary = {
 	ColumnValueType.VT_Map: "Object",
 }
 
+# warning-ignore:unused_class_variable
 onready var first_row_map: Dictionary = {
 	FirstRowType.FRT_Skip: "Header",
 	FirstRowType.FRT_ValidData: "Valid data",
 }
 
+# warning-ignore:unused_class_variable
 onready var indent_type: Dictionary = {
 	IndentType.IT_None: "None",
 	IndentType.IT_Space: "Space",

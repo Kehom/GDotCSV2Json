@@ -48,6 +48,15 @@ onready var rtext_preview: RichTextLabel = $splitter/right/rich_preview
 
 #######################################################################################################################
 ### "Private" properties
+# This will be used to parse the loaded data. Yes, Godot does offer a very useful way to perform this parsing
+# when directly loading data from files. However the HTML export can't use this feature. To keep the results
+# consistent, all the parsing will be performed by this thing
+var _csvparser: CSVParser = CSVParser.new()
+
+# Cache the loaded CSV data. This will allow easier changing of the "column separator" without having to reload
+# data from the file
+var _loaded_csv: String = ""
+
 # Cache number of columns within the CSV file. Not entirely necessary but make coding slightly easier
 var _col_count: int = 0
 
@@ -103,7 +112,6 @@ func _calculate_output() -> void:
 	rtext_preview.bbcode_text = output
 
 
-
 func _get_base_indent() -> String:
 	var ret: String = ""
 	
@@ -117,11 +125,82 @@ func _get_base_indent() -> String:
 	
 	return ret
 
+
+func _parse_csv(auto_template: bool) -> void:
+	if (_loaded_csv.empty()):
+		return
+	
+	# Ensure the CSV parser is "not done"
+	_csvparser.reset()
+	
+	# Reset cached parsed lines
+	appstate.file_data = []
+	
+	# Read first line which will determine number of columns and, obviously, how things will be parsed later
+	var pline: PoolStringArray = _csvparser.get_csv_line(_loaded_csv)
+	appstate.file_data.append(pline)
+	_col_count = pline.size()
+	
+	# Now parse the rest of the data
+	while (!_csvparser.done()):
+		pline = _csvparser.get_csv_line(_loaded_csv)
+		
+		if (pline.size() == _col_count):
+			appstate.file_data.append(pline)
+	
+	_build_column_list()
+	
+	if (auto_template):
+		_build_auto_template()
+	
+	_calculate_output()
+
+
+
+
+#	# Will be used to parse things
+#	var separator: String = $dlg_loadcsv.get_separator()
+#	# Reset cached file data array
+#	appstate.file_data = []
+#
+#	# Read first line which will determine number of columns and, obviously, how things will be parsed later
+#	var pline: PoolStringArray = file.get_csv_line(separator)
+#	appstate.file_data.append(pline)
+#	_col_count = pline.size()
+#
+#	# Now read the rest of the file
+#	while (!file.eof_reached()):
+#		pline = file.get_csv_line(separator)
+#
+#		if (pline.size() == _col_count):
+#			appstate.file_data.append(pline)
+#
+#	file.close()
+#
+#
+#	_build_column_list()
+#
+#	if ($dlg_loadcsv.rebuild_column_map()):
+#		_build_auto_template()
+#
+#	_calculate_output()
+
 #######################################################################################################################
 ### Event handlers
 
 func _on_bt_loadcsv_pressed() -> void:
-	$dlg_loadcsv.popup_centered()
+	if (OS.get_name() != "HTML5"):
+		$dlg_loadcsv.popup_centered()
+	
+	else:
+		if (OS.has_feature("JavaScript")):
+			htmlbridge.load_csv()
+			
+		
+		else:
+			# TODO: Display error message telling that the running thing doesn't have JavaScript
+			
+			pass
 
 
 
@@ -134,32 +213,42 @@ func _on_dlg_loadcsv_file_selected(path: String) -> void:
 		print("failed to open file. Code = ", res)
 		return
 	
-	# Will be used to parse things
-	var separator: String = $dlg_loadcsv.get_separator()
-	# Reset cached file data array
-	appstate.file_data = []
-	
-	# Read first line which will determine number of columns and, obviously, how things will be parsed later
-	var pline: PoolStringArray = file.get_csv_line(separator)
-	appstate.file_data.append(pline)
-	_col_count = pline.size()
-	
-	# Now read the rest of the file
-	while (!file.eof_reached()):
-		pline = file.get_csv_line(separator)
-		
-		if (pline.size() == _col_count):
-			appstate.file_data.append(pline)
-	
+	_loaded_csv = file.get_as_text()
 	file.close()
 	
+	_parse_csv(true)
 	
-	_build_column_list()
-	
-	if ($dlg_loadcsv.rebuild_column_map()):
-		_build_auto_template()
-	
-	_calculate_output()
+#	# Will be used to parse things
+#	var separator: String = $dlg_loadcsv.get_separator()
+#	# Reset cached file data array
+#	appstate.file_data = []
+#
+#	# Read first line which will determine number of columns and, obviously, how things will be parsed later
+#	var pline: PoolStringArray = file.get_csv_line(separator)
+#	appstate.file_data.append(pline)
+#	_col_count = pline.size()
+#
+#	# Now read the rest of the file
+#	while (!file.eof_reached()):
+#		pline = file.get_csv_line(separator)
+#
+#		if (pline.size() == _col_count):
+#			appstate.file_data.append(pline)
+#
+#	file.close()
+#
+#
+#	_build_column_list()
+#
+#	if ($dlg_loadcsv.rebuild_column_map()):
+#		_build_auto_template()
+#
+#	_calculate_output()
+
+func _on_data_loaded_from_html(data: String) -> void:
+	_loaded_csv = data
+	_parse_csv(true)
+
 
 
 func _on_bt_save_pressed() -> void:
@@ -258,6 +347,25 @@ func _on_dlg_loadtemplate_file_selected(path: String) -> void:
 	_calculate_output()
 
 
+func _on_bt_auto_pressed() -> void:
+	_build_auto_template()
+	_calculate_output()
+
+
+
+func _on_txt_delimiter_text_changed(new_text: String) -> void:
+	_csvparser.set_delimiter(new_text)
+	_parse_csv(false)
+	var txt: LineEdit = $splitter/left/vbox/buttons/txt_delimiter as LineEdit
+	if (txt):
+		txt.call_deferred("select_all")
+
+
+func _on_txt_delimiter_focus_entered() -> void:
+	var txt: LineEdit = $splitter/left/vbox/buttons/txt_delimiter as LineEdit
+	if (txt):
+		txt.call_deferred("select_all")
+
 
 func _on_drop_indent_item_selected(index: int) -> void:
 	if (index == appstate.IndentType.IT_Space):
@@ -276,6 +384,7 @@ func _on_splitter_dragged(offset: int) -> void:
 	if (offset < 300):
 		var splitter: SplitContainer = $splitter
 		splitter.split_offset = 300
+
 
 #######################################################################################################################
 ### Overrides
@@ -303,9 +412,15 @@ func _ready() -> void:
 	# warning-ignore:return_value_discarded
 	appstate.connect("settings_changed", self, "_calculate_output")
 	
+	if (OS.get_name() == "HTML5" && OS.has_feature("JavaScript")):
+		# warning-ignore:return_value_discarded
+		htmlbridge.connect("data_loaded", self, "_on_data_loaded_from_html")
+	
+	
 	# FIXME: This is only valid if the root_scope is indeed a TemplateArray
 	root_scope.set_array_type(appstate.ColumnValueType.VT_Map)
 	root_scope.set_csv_source(true)
 	
 	_calculate_output()
+
 
