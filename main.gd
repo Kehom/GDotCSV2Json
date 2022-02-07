@@ -156,34 +156,55 @@ func _parse_csv(auto_template: bool) -> void:
 	_calculate_output()
 
 
+func _get_template_out_data() -> String:
+	var out_dict: Dictionary = {
+		"template_v": 1,
+		"root": {},
+	}
+	
+	root_scope.generate_save_template(out_dict.root)
+	
+	return JSON.print(out_dict)
 
 
-#	# Will be used to parse things
-#	var separator: String = $dlg_loadcsv.get_separator()
-#	# Reset cached file data array
-#	appstate.file_data = []
-#
-#	# Read first line which will determine number of columns and, obviously, how things will be parsed later
-#	var pline: PoolStringArray = file.get_csv_line(separator)
-#	appstate.file_data.append(pline)
-#	_col_count = pline.size()
-#
-#	# Now read the rest of the file
-#	while (!file.eof_reached()):
-#		pline = file.get_csv_line(separator)
-#
-#		if (pline.size() == _col_count):
-#			appstate.file_data.append(pline)
-#
-#	file.close()
-#
-#
-#	_build_column_list()
-#
-#	if ($dlg_loadcsv.rebuild_column_map()):
-#		_build_auto_template()
-#
-#	_calculate_output()
+
+
+func _load_template(data: String) -> void:
+	var jpres: JSONParseResult = JSON.parse(data)
+	
+	if (jpres.error != OK):
+		# TODO: proper error message
+		return
+	
+	if (jpres.result is Array):
+		return
+	
+	if (!jpres.result.has("template_v")):
+		return
+	
+	if (!jpres.result.has("root")):
+		return
+	
+	var ver: int = jpres.result.template_v
+	var root: Dictionary = jpres.result.root
+	
+	if (root.type == "array"):
+		# NOTE: Code in here currently doesn't do anything, but will be necessary when support for custom root format is added.
+		if (!root_scope):
+			pass
+		
+		elif(root_scope is TemplateObject):
+			pass
+	
+	elif (root.type == "object"):
+		pass
+	
+	root_scope.restore_from_template(root, ver)
+	
+	_calculate_output()
+
+
+
 
 #######################################################################################################################
 ### Event handlers
@@ -217,33 +238,8 @@ func _on_dlg_loadcsv_file_selected(path: String) -> void:
 	file.close()
 	
 	_parse_csv(true)
-	
-#	# Will be used to parse things
-#	var separator: String = $dlg_loadcsv.get_separator()
-#	# Reset cached file data array
-#	appstate.file_data = []
-#
-#	# Read first line which will determine number of columns and, obviously, how things will be parsed later
-#	var pline: PoolStringArray = file.get_csv_line(separator)
-#	appstate.file_data.append(pline)
-#	_col_count = pline.size()
-#
-#	# Now read the rest of the file
-#	while (!file.eof_reached()):
-#		pline = file.get_csv_line(separator)
-#
-#		if (pline.size() == _col_count):
-#			appstate.file_data.append(pline)
-#
-#	file.close()
-#
-#
-#	_build_column_list()
-#
-#	if ($dlg_loadcsv.rebuild_column_map()):
-#		_build_auto_template()
-#
-#	_calculate_output()
+
+
 
 func _on_data_loaded_from_html(data: String) -> void:
 	_loaded_csv = data
@@ -255,7 +251,17 @@ func _on_bt_save_pressed() -> void:
 	if (rtext_preview.text.empty()):
 		return
 	
-	$dlg_saveoutput.popup_centered()
+	if (OS.get_name() == "HTML5"):
+		if (OS.has_feature("JavaScript")):
+			JavaScript.download_buffer(rtext_preview.text.to_utf8(), "output.json", "application/json")
+		
+		else:
+			# TODO: Display an error message
+			# Running in HTML5 but there is no JavaScript.
+			pass
+	
+	else:
+		$dlg_saveoutput.popup_centered()
 
 
 func _on_dlg_saveoutput_file_selected(path: String) -> void:
@@ -276,31 +282,43 @@ func _on_drop_frow_item_selected(_index: int) -> void:
 
 
 func _on_bt_savetemplate_pressed() -> void:
-	$dlg_savetemplate.popup_centered()
+	if (OS.get_name() == "HTML5"):
+		if (OS.has_feature("JavaScript")):
+			JavaScript.download_buffer(_get_template_out_data().to_utf8(), "template.json", "application/json")
+		
+		else:
+			# TODO: proper error message here - In HTML but without JavaScript
+			pass
+	
+	else:
+		$dlg_savetemplate.popup_centered()
 
 
 func _on_dlg_savetemplate_file_selected(path: String) -> void:
-	var outdict: Dictionary = {
-		"template_v": 1,
-		
-		"root": {}
-	}
-	
-	root_scope.generate_save_template(outdict.root)
-	
 	var ofile: File = File.new()
 	if (ofile.open(path, File.WRITE) != OK):
 		# TODO: proper error message
 		print("Failed to create output template file")
 		return
 	
-	ofile.store_string(JSON.print(outdict))
+	ofile.store_string(_get_template_out_data())
 	
 	ofile.close()
 
 
 func _on_bt_loadtemplate_pressed() -> void:
-	$dlg_loadtemplate.popup_centered()
+	if (OS.get_name() == "HTML5"):
+		if (OS.has_feature("JavaScript")):
+			htmlbridge.load_template()
+		
+		else:
+			# TODO: Display an error message
+			pass
+	
+	else:
+		$dlg_loadtemplate.popup_centered()
+
+
 
 
 func _on_dlg_loadtemplate_file_selected(path: String) -> void:
@@ -310,41 +328,8 @@ func _on_dlg_loadtemplate_file_selected(path: String) -> void:
 		print("Failed to open output template file")
 		return
 	
-	var jpres: JSONParseResult = JSON.parse(infile.get_as_text())
-	
-	if (jpres.error != OK):
-		# TODO: proper error message
-		return
-	
-	if (jpres.result is Array):
-		
-		return
-	
-	if (!jpres.result.has("template_v")):
-		return
-	
-	if (!jpres.result.has("root")):
-		return
-	
-	var ver: int = jpres.result.template_v
-	var root: Dictionary = jpres.result.root
-	
-	# At this point assuming every entry is in the correct format
-	if (root.type == "array"):
-		# NOTE: the code here will be necessary when support for custom root format is added.
-		if (!root_scope):
-			pass
-		elif (root_scope is TemplateObject):
-			pass
-		
-		
-	
-	elif (root.type == "object"):
-		pass
-	
-	root_scope.restore_from_template(root, ver)
-	
-	_calculate_output()
+	_load_template(infile.get_as_text())
+
 
 
 func _on_bt_auto_pressed() -> void:
@@ -415,6 +400,9 @@ func _ready() -> void:
 	if (OS.get_name() == "HTML5" && OS.has_feature("JavaScript")):
 		# warning-ignore:return_value_discarded
 		htmlbridge.connect("data_loaded", self, "_on_data_loaded_from_html")
+		
+		# warning-ignore:return_value_discarded
+		htmlbridge.connect("template_loaded", self, "_load_template")
 	
 	
 	# FIXME: This is only valid if the root_scope is indeed a TemplateArray
