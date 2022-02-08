@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/drop_value_type.gd"
 }, {
+"base": "Container",
+"class": "FlowContainer",
+"language": "GDScript",
+"path": "res://addons/keh_ui/flowcontainer/flowcontainer.gd"
+}, {
 "base": "TemplateBase",
 "class": "TemplateArray",
 "language": "GDScript",
@@ -53,6 +58,7 @@ _global_script_class_icons={
 "CSVParser": "",
 "ColumnTag": "",
 "DropValueType": "",
+"FlowContainer": "",
 "TemplateArray": "",
 "TemplateBase": "",
 "TemplateElement": "",
@@ -76,6 +82,10 @@ htmlbridge="*res://scripts/htmlbridge.gd"
 [debug]
 
 gdscript/warnings/unused_class_variable=true
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/keh_ui/plugin.cfg" )
 
 [rendering]
 

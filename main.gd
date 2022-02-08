@@ -31,7 +31,7 @@ onready var drop_frow: OptionButton = $splitter/left/vbox/frowsetting/drop_frow
 onready var drop_indent: OptionButton = $splitter/right/indentsetting/drop_indent
 onready var txt_indent: SpinBox = $splitter/right/indentsetting/txt_indentsize
 
-onready var vbox_columns: VBoxContainer = $splitter/left/vbox/hbox_vars/vbox_clist/scrl_columns/vbox
+onready var vbox_columns: FlowContainer = $splitter/left/vbox/hbox_vars/vbox_clist/scrl_columns/flow
 
 onready var root_scope: TemplateBase = $splitter/left/vbox/scrl_template/vbox/root_scope
 
