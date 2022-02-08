@@ -125,6 +125,19 @@ func _on_drop_vtype_item_selected(index: int) -> void:
 	
 	appstate.notify_changes()
 
+
+func _on_txt_key_focus_entered() -> void:
+	var tkey: LineEdit = $panel/vbox/hbox/txt_key as LineEdit
+	if (tkey):
+		tkey.call_deferred("select_all")
+
+
+func _on_txt_key_focus_exited() -> void:
+	var tkey: LineEdit = $panel/vbox/hbox/txt_key as LineEdit
+	if (tkey):
+		tkey.select(0, 0)
+
+
 #######################################################################################################################
 ### Overrides
 func calculate_output(columns: PoolStringArray, bindent: String, ilevel: int) -> String:
@@ -180,4 +193,5 @@ func add_restored_child(c: TemplateBase) -> void:
 	scope_holder.add_child(c)
 	scope_node = c
 	_check_ui_visibility()
+
 

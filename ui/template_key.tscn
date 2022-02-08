@@ -85,6 +85,9 @@ visible = false
 margin_top = 30.0
 margin_right = 277.0
 margin_bottom = 30.0
+
+[connection signal="focus_entered" from="panel/vbox/hbox/txt_key" to="." method="_on_txt_key_focus_entered"]
+[connection signal="focus_exited" from="panel/vbox/hbox/txt_key" to="." method="_on_txt_key_focus_exited"]
 [connection signal="text_changed" from="panel/vbox/hbox/txt_key" to="." method="_on_txt_key_text_changed"]
 [connection signal="item_selected" from="panel/vbox/hbox/drop_vtype" to="." method="_on_drop_vtype_item_selected"]
 [connection signal="pressed" from="panel/vbox/hbox/bt_remove" to="." method="_on_bt_remove_pressed"]

@@ -31,6 +31,8 @@ onready var drop_frow: OptionButton = $splitter/left/vbox/frowsetting/drop_frow
 onready var drop_indent: OptionButton = $splitter/right/indentsetting/drop_indent
 onready var txt_indent: SpinBox = $splitter/right/indentsetting/txt_indentsize
 
+onready var chk_auto_template: CheckBox = $splitter/left/vbox/chk_autotemplate as CheckBox
+
 onready var vbox_columns: FlowContainer = $splitter/left/vbox/hbox_vars/vbox_clist/scrl_columns/flow
 
 onready var root_scope: TemplateBase = $splitter/left/vbox/scrl_template/vbox/root_scope
@@ -237,13 +239,13 @@ func _on_dlg_loadcsv_file_selected(path: String) -> void:
 	_loaded_csv = file.get_as_text()
 	file.close()
 	
-	_parse_csv(true)
+	_parse_csv(chk_auto_template.pressed)
 
 
 
 func _on_data_loaded_from_html(data: String) -> void:
 	_loaded_csv = data
-	_parse_csv(true)
+	_parse_csv(chk_auto_template.pressed)
 
 
 
@@ -341,13 +343,13 @@ func _on_bt_auto_pressed() -> void:
 func _on_txt_delimiter_text_changed(new_text: String) -> void:
 	_csvparser.set_delimiter(new_text)
 	_parse_csv(false)
-	var txt: LineEdit = $splitter/left/vbox/buttons/txt_delimiter as LineEdit
+	var txt: LineEdit = $splitter/left/vbox/delimsetting/txt_delimiter as LineEdit
 	if (txt):
 		txt.call_deferred("select_all")
 
 
 func _on_txt_delimiter_focus_entered() -> void:
-	var txt: LineEdit = $splitter/left/vbox/buttons/txt_delimiter as LineEdit
+	var txt: LineEdit = $splitter/left/vbox/delimsetting/txt_delimiter as LineEdit
 	if (txt):
 		txt.call_deferred("select_all")
 
