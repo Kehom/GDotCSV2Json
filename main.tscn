@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://main.gd" type="Script" id=2]
-[ext_resource path="res://ui/custom_file_dialog.gd" type="Script" id=3]
 [ext_resource path="res://ui/template_array.tscn" type="PackedScene" id=4]
 [ext_resource path="res://fonts/font_hack_regular.tres" type="DynamicFont" id=5]
 
@@ -46,20 +45,20 @@ text = "Load CSV"
 
 [node name="space0" type="Control" parent="splitter/left/vbox/buttons"]
 margin_left = 84.0
-margin_right = 109.0
+margin_right = 104.0
 margin_bottom = 24.0
-rect_min_size = Vector2( 25, 0 )
+rect_min_size = Vector2( 20, 0 )
 
 [node name="lbl_delimiter" type="Label" parent="splitter/left/vbox/buttons"]
-margin_left = 113.0
+margin_left = 108.0
 margin_top = 5.0
-margin_right = 226.0
+margin_right = 221.0
 margin_bottom = 19.0
 text = "Column separator"
 
 [node name="txt_delimiter" type="LineEdit" parent="splitter/left/vbox/buttons"]
-margin_left = 230.0
-margin_right = 256.0
+margin_left = 225.0
+margin_right = 251.0
 margin_bottom = 24.0
 custom_constants/minimum_spaces = 4
 text = ","
@@ -244,8 +243,8 @@ max_value = 9.0
 value = 3.0
 
 [node name="dlg_loadcsv" type="FileDialog" parent="."]
-margin_right = 512.0
-margin_bottom = 320.0
+margin_right = 660.0
+margin_bottom = 400.0
 popup_exclusive = true
 window_title = "Open a File"
 resizable = true
@@ -254,11 +253,10 @@ access = 2
 filters = PoolStringArray( "*.csv ; Comma separated", "*.txt ; Text file" )
 current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
 current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
-script = ExtResource( 3 )
 
 [node name="dlg_saveoutput" type="FileDialog" parent="."]
-margin_right = 512.0
-margin_bottom = 320.0
+margin_right = 660.0
+margin_bottom = 400.0
 popup_exclusive = true
 resizable = true
 access = 2
@@ -267,8 +265,8 @@ current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
 current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
 
 [node name="dlg_loadtemplate" type="FileDialog" parent="."]
-margin_right = 512.0
-margin_bottom = 320.0
+margin_right = 660.0
+margin_bottom = 400.0
 popup_exclusive = true
 window_title = "Open a File"
 resizable = true
@@ -279,8 +277,8 @@ current_dir = "/Dev/Godot/apps/csv_to_json/project3.2"
 current_path = "/Dev/Godot/apps/csv_to_json/project3.2/"
 
 [node name="dlg_savetemplate" type="FileDialog" parent="."]
-margin_right = 512.0
-margin_bottom = 320.0
+margin_right = 660.0
+margin_bottom = 400.0
 popup_exclusive = true
 resizable = true
 access = 2
