@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name='viewport' content='width=device-width, user-scalable=no' />
+	<title>CSV to JSON</title>
+
+	<style type="text/css">
+		html, 
+		body {
+			background-color: #303030;
+			height: 100%;
+			margin: 0;
+			overflow: hidden;
+		}
+
+		a {
+ 		   text-decoration: none;
+   		color: #a0a0e0;
+   		font-weight: bold;
+		}
+
+		.main-container {
+			display: flex;
+			flex-flow: column;
+			height: 100%;
+		}
+
+		.main-container nav {
+			flex: 0 auto;
+
+			margin-left: 1rem;
+			margin-right: 1rem;
+
+			color: #d0d0d0;
+		}
+
+		#canvas-size-hint {
+			flex: 1 auto;
+
+			border: 0;
+			padding: 0;
+			margin: 0;
+		}
+
+		#canvas {
+			display: block;
+			position: absolute;
+			border: 0;
+			margin: 0;
+			padding: 0;
+		}
+
+		#status {
+			positioN: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			visibility: hidden;
+		}
+
+		#progress {
+			width: 360px;
+			height: 12px;
+			background-color: #202020;
+			border: 1px solid #808080;
+			padding: 1px;
+			border-radius: 2px;
+			visibility: visible;
+		}
+
+		#progress-inner {
+			height: 100%;
+			width: 0;
+			box-sizing: border-box;
+			transition: width 0.5s linear;
+			background-color: #c0c0c0;
+			border-radius: 3px;
+		}
+
+		#indeterminate {
+			height: 42px;
+			visibility: visible;
+			position: relative;
+		}
+
+		#indeterminate > div {
+			width: 4.5px;
+			height: 0;
+			border-style: solid;
+			border-width: 9px 3px 0 3px;
+			border-color: #2b2b2b transparent transparent transparent;
+			transform-origin: center 21px;
+			position: absolute;
+		}
+
+		#indeterminate > div:nth-child(1) { transform: rotate( 22.5deg); }
+		#indeterminate > div:nth-child(2) { transform: rotate( 67.5deg); }
+		#indeterminate > div:nth-child(3) { transform: rotate(112.5deg); }
+		#indeterminate > div:nth-child(4) { transform: rotate(157.5deg); }
+		#indeterminate > div:nth-child(5) { transform: rotate(202.5deg); }
+		#indeterminate > div:nth-child(6) { transform: rotate(247.5deg); }
+		#indeterminate > div:nth-child(7) { transform: rotate(292.5deg); }
+		#indeterminate > div:nth-child(8) { transform: rotate(337.5deg); }
+
+
+	</style>
+</head>
+<body>
+	<div class="main-container">
+		<nav>
+			<h3 style="display: inline-block;">CSV to JSON Converter</h3> - Developed with <a href="https://godotengine.org">Godot Engine</a> by Yuri Sarudiansky. Source code available <a href="https://github.com/Kehom/GDotCSV2Json">here</a>.
+		</nav>		
+
+		<div id="status">
+			<div id="progress" style="display: none;" oncontextmenu="event.preventDefault();">
+				<div id="progress-inner"></div>
+			</div>
+
+			<div id="indeterminate" style="display: none;" oncontextmenu="event.preventDefault();">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+
+			<div id="notice" class="godot" style="display: none;"></div>
+		</div>
+
+		<div id="canvas-size-hint"></div>
+		<canvas id="canvas"></canvas>
+		
+	</div>
+
+
+
+	<script type="text/javascript" src="$GODOT_URL"></script>
+	<script type="text/javascript">
+		// Official default Godot front page:
+		// https://github.com/godotengine/godot/blob/master/misc/dist/html/full-size.html
+
+		// Code in GDScript will properly set the entries within this object. Those will
+		// become GDScript callback functions.
+		var gdFuncs = {
+			csvLoaded: null,
+			templateLoaded: null,
+		}
+
+		const INDETERMINATE_STEP = 100;
+
+		var elProgress = document.getElementById('progress');
+		var elProgressInner = document.getElementById('progress-inner');
+		var elIndeterminate = document.getElementById('indeterminate');
+		var elNotice = document.getElementById('notice');
+
+		var initializing = true;
+		var currentStatus = 'hidden';
+		var anim_callbacks = [];
+
+		function animate(time) {
+			anim_callbacks.forEach(cb => cb(time));
+			requestAnimationFrame(animate);
+		}
+		requestAnimationFrame(animate);
+
+		function animateIndeterminate(ms) {
+			var i = Math.floor(ms / INDETERMINATE_STEP % 8);
+			if (elIndeterminate.children[i].style.borderTopColor == '') {
+				Array.prototype.slice.call(elIndeterminate.children).forEach(child => {
+					child.style.borderToPColor = '';
+				});
+
+				elIndeterminate.children[i].style.borderTopColor = '#dfdfdf';
+			}
+		}
+
+		function loader(ext, onsuccess, onerror) {
+			var input = document.createElement('input');
+			input.setAttribute('type', 'file');
+			input.setAttribute('accept', ext);
+			input.click();
+
+			input.addEventListener('change', evt => {
+				var file = event.target.files[0];
+				var reader = new FileReader();
+
+				reader.readAsText(file);
+
+				reader.onloadend = function(evt) {
+					onsuccess(reader.result);
+				}
+
+				reader.onerror = function(evt) {
+
+				}
+			});
+		}
+
+		// This function is meant to be called by GDScript in order to load CSV data
+		function loadCSV() {
+			if (!gdFuncs.csvLoaded) {
+				return;
+			}
+
+			loader('.csv, .txt', gdFuncs.csvLoaded, null)
+		}
+
+		// This function is meant to be called by GDScript in order to load output template data
+		function loadTemplate() {
+			if (!gdFuncs.templateLoaded) {
+				return;
+			}
+
+			loader('.json', gdFuncs.templateLoaded, null)
+		}
+
+		function setStatus(status) {
+			if (currentStatus === status || !initializing) {
+				return;
+			}
+
+			[elProgress, elIndeterminate, elNotice].forEach(el => {
+				el.style.display = 'none';
+			});
+
+			switch (status) {
+				case 'progress':
+					elProgress.style.display = 'block';
+					break;
+				
+				case 'indeterminate':
+					elIndeterminate.style.display = 'block';
+					anim_callbacks.push(animateIndeterminate);
+					break;
+				
+				case 'notice':
+					elNotice.style.display = 'block';
+					break;
+				
+				case 'hidden':
+					break;
+				
+				default:
+					throw new Error('Invalid status mode.');
+			}
+
+			currentStatus = status;
+		}
+
+
+		function updateProgress(current, total) {
+			if (total > 0) {
+				elProgressInner.style.width = current / total * 100 + '%';
+				
+				setStatus('progress');
+				if (current === total) {
+					setTimeout(() => {
+						setStatus('indeterminate', 500);
+					});
+				}
+			} else {
+				setStatus('indeterminate');
+			}
+		}
+
+
+		function doneLoading() {
+			setStatus('hidden');
+			initializing = false;
+		}
+
+		function setNotice(text) {
+			while (elNotice.lastChild) {
+				elNotice.removeChild(elNotice.lastChild);
+			}
+
+			var lines = text.split('\n');
+			lines.forEach((line) => {
+				elNotice.appendChild(document.createTextNode(line));
+				elNotice.appendChild(document.createElement('br'));
+			});
+		}
+
+		function displayFailureNotice(err) {
+			var msg = err.message || err;
+			console.error(msg);
+			setNotice(msg);
+			setStatus('notice');
+			initializing = false;
+		}
+
+
+		function resizeCanvas() {
+			var cv = document.getElementById("canvas");
+			var cont = document.getElementById("canvas-size-hint");
+
+			var brect = cont.getBoundingClientRect();
+
+			cv.style.top = `${brect.top}px`;
+			cv.style.left = `${brect.left}px`;
+			cv.width = brect.width;
+			cv.height = brect.height;
+		}
+
+		var engine = new Engine($GODOT_CONFIG);
+		
+		var config = {
+			canvasResizePolicy: 0,
+			onProgress: updateProgress,
+		};
+
+		setStatus('indeterminate');
+		engine.startGame(config).then(doneLoading, displayFailureNotice);
+
+		window.addEventListener('resize', resizeCanvas, false);
+		resizeCanvas();
+	</script>
+</body>
+</html>
+
