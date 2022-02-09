@@ -9,14 +9,14 @@ This application does not enforce a "one to one mapping", that is, each column i
 
 How exactly the output will be like relies on the output template. This template can be easily manipulated by adding/removing entries. Columns are mapped into keys by simply dragging a column tag from the list into the corresponding key. Column tags are generated once a CSV file is loaded.
 
-Within the CSV load dialog there is a check box that, if enabled, will automatically generate a "one to one" output template mapping.
+An output template can be automatically generated when a CSV file is loaded by simply keeping the `Auto build template on load` checked (it's bellow the load button). If this option is disabled and you want the automatic template to be generated, just click the `Auto` button that is just above the template area.
 
 Templates can be saved for future uses, which can be very useful if it isn't a "one to one" mapping and the source data may change, requiring further conversions.
 
 
 ### Not So Comma Separated
 
-For some reason certain applications use `;` instead of `,` when exporting the spreadsheet into a "comma" separated value format. To deal with such cases, when opening the input file there is a text box that allows specification of which character should be used as value separation.
+For some reason certain applications use `;` instead of `,` when exporting the spreadsheet into a "comma" separated value format. To deal with such cases, you can determine what is the separator by changing the character in the `Column separator` setting (near the top section of the left panel).
 
 ### First Row is Of Valid Values
 
