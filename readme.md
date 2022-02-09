@@ -4,6 +4,8 @@ This is a free, open source, CSV to JSON converter, powered by [Godot engine](ht
 
 This application does not enforce a "one to one mapping", that is, each column in the CSV generates a key in the resulting JSON file. Instead you can create a template that will be followed when generating the output.
 
+Besides Windows and Linux binaries that can be found in the [Releases](https://github.com/Kehom/GDotCSV2Json/releases) section, there is a web version that can be accessed at https://kehom.github.io/csvtojson/
+
 
 ### Output Template
 
